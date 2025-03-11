@@ -36,7 +36,7 @@ logging() {
 }
 
 # A for loop to source the scripts
-for script in usermanagement.sh sshmanagement.sh setuppodman.sh; do
+for script in usermanagement.sh sshconfiguration.sh rootlesspodman.sh; do
     if [ -f "$script" ]; then
         source "$script"
     else
