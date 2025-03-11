@@ -26,12 +26,17 @@ make_ssh_key() {
   chown "$1":"$1" /home/"$1"/.ssh/id_ed25519 /home/"$1"/.ssh/id_ed25519.pub /home/"$1"/.ssh/authorized_keys
   chmod 600 /home/"$1"/.ssh/id_ed25519 /home/"$1"/.ssh/id_ed25519.pub /home/"$1"/.ssh/authorized_keys
   logging "Generated and added ssh key for user '$1'"
+  echo "The private key is located at /home/$1/.ssh/id_ed25519"
+  echo "The public key is located at /home/$1/.ssh/id_ed25519.pub"
 }
 
 # Get or make ssh key for user, takes username as argument
 user_ssh() {
   if [ ! -s /home/"$1"/.ssh/authorized_keys ]; then
-    read -p "Would you like to supply an ssh key for user '$1'? y/n" yn
+    mkdir -p /home/"$1"/.ssh
+    chown "$1":"$1" /home/"$1"/.ssh
+    chmod 700 /home/"$1"/.ssh
+    read -p "Would you like to supply an ssh key for user '$1'? y/n " yn
     case "$yn" in
       [Yy]* ) get_ssh_key "$1";;
       [Nn]* ) make_ssh_key "$1";;
@@ -54,11 +59,11 @@ check_ufw() {
     if ! dnf list installed ufw &>/dev/null; then
       dnf install ufw
       logging "ufw installed"
-    elif ! ufw status | grep "$ssh_port" &>/dev/null; then
+    elif ! {ufw status | grep "$ssh_port" &>/dev/null}; then
       ufw allow "$ssh_port"
       logging "ufw is allowing port '$ssh_port'"
-    elif ! ufw status | grep "Status: active" &>/dev/null; then
-      read -p "ufw is already installed, allowing port '$ssh_port', but not enabled. Would you like to enable ufw? " yn
+    elif ! {ufw status | grep "Status: active" &>/dev/null}; then
+      read -p "ufw is already installed, allowing port '$ssh_port', but not enabled. Would you like to enable ufw? y/n  " yn
       case "$yn" in
         [Yy]* ) ufw enable;
         logging "ufw has been enabled.";
@@ -98,7 +103,7 @@ EOF
 check_knockd() {
     if ! dnf list installed knock-server; then
         echo "knockd is not installed."
-        read -p "Would you like to implement knockd?" yn
+        read -p "Would you like to implement knockd? y/n " yn
         case "$yn" in
         [Yy]* ) dnf install knock-server;
         make_knockd_config;
@@ -116,7 +121,7 @@ user_ssh "$second_username"
 sed -i 's/PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config
 sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
 sed -i 's/ChallengeResponseAuthentication yes/ChallengeResponseAuthentication no/' /etc/ssh/sshd_config
-read -p "Would you like to change the ssh port? y/n" yn
+read -p "Would you like to change the ssh port? y/n " yn
 case "$yn" in
   [Yy]* ) change_ssh_port;;
   [Nn]* ) logging "Did not change ssh port";;
