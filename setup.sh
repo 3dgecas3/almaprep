@@ -6,18 +6,8 @@ if [ "$EUID" -ne 0 ]; then
   exit 1
 fi
 
-# Function to check commands necessary in the scripts
-check_requirements() {
-  local required_commands=("openssl" "useradd" "groupadd" "chpasswd" "ufw" "ssh-keygen")
-  for cmd in "${required_commands[@]}"; do
-    if ! command -v "$cmd" >/dev/null 2>&1; then
-      echo "Error: Required command '$cmd' not found"
-      exit 1
-    fi
-  done
-}
-
-check_requirements
+# Tighten permissions on the scripts
+chmod 700 ./*.sh
 
 # Define output files
 LOG_FILE="/var/log/housekeeping.log"
@@ -35,6 +25,34 @@ logging() {
   echo "$(date '+%Y-%m-%d %H:%M:%S') - '$1'" >> "$LOG_FILE"
 }
 
+update_system() {
+  dnf update -y 2>&1 | while IFS= read -r line; do logging "$line"; done
+}
+
+# Helper function to install necessary packages
+install_package() {
+  dnf install -y "$1" 2>&1 | while IFS= read -r line; do logging "$line"; done
+}
+
+# Function to check commands necessary in the scripts
+check_requirements() {
+  local required_commands=("openssl" "useradd" "groupadd" "chpasswd" "ufw" "ssh-keygen")
+  for cmd in "${required_commands[@]}"; do
+    if ! command -v "$cmd" >/dev/null 2>&1; then
+      echo "Error: Required command '$cmd' not found"
+      echo "Attempting to install it now"
+      install_package "$cmd"
+      if [ "$?" -ne 0 ]; then
+        echo "Error: Failed to install $cmd"
+        exit 1
+      fi
+    fi
+  done
+}
+
+update_system
+check_requirements
+
 # A for loop to source the scripts
 for script in usermanagement.sh sshconfiguration.sh rootlesspodman.sh; do
     if [ -f "$script" ]; then
@@ -44,6 +62,3 @@ for script in usermanagement.sh sshconfiguration.sh rootlesspodman.sh; do
         exit 1
     fi
 done
-
-# Tighten permissions on the scripts
-chmod 700 ./*.sh

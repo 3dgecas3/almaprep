@@ -31,7 +31,7 @@ make_ssh_key() {
 # Get or make ssh key for user, takes username as argument
 user_ssh() {
   if [ ! -s /home/"$1"/.ssh/authorized_keys ]; then
-    read -p "Would you like to supply an ssh key for user '$1'? " yn
+    read -p "Would you like to supply an ssh key for user '$1'? y/n" yn
     case "$yn" in
       [Yy]* ) get_ssh_key "$1";;
       [Nn]* ) make_ssh_key "$1";;
@@ -75,6 +75,7 @@ check_ufw() {
 
 # Function to make knockd config
 make_knockd_config() {
+    echo "Knockd uses sequences of the form port:proto seperated by commas."
     read -p "Please supply the knock sequence to open the ssh port: " open_sequence
     read -p "Please supply the knock sequence to close the ssh port: " close_sequence
     cat <<EOF > /etc/knockd.conf
@@ -110,12 +111,12 @@ check_knockd() {
 }
 
 # Secure ssh
-user_ssh "$admin_user"
-user_ssh "$second_user"
+user_ssh "$admin_username"
+user_ssh "$second_username"
 sed -i 's/PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config
 sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
 sed -i 's/ChallengeResponseAuthentication yes/ChallengeResponseAuthentication no/' /etc/ssh/sshd_config
-read -p "Would you like to change the ssh port? " yn
+read -p "Would you like to change the ssh port? y/n" yn
 case "$yn" in
   [Yy]* ) change_ssh_port;;
   [Nn]* ) logging "Did not change ssh port";;
