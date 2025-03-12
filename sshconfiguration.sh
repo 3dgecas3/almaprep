@@ -55,27 +55,14 @@ change_ssh_port() {
 
 # Looping function to check install and status of ufw
 check_ufw() {
-  while true; do
-    if ! dnf list installed ufw &>/dev/null; then
-      dnf install ufw
-      logging "ufw installed"
-    elif ! $(ufw status | grep "$ssh_port" &>/dev/null); then
-      ufw allow "$ssh_port"
-      logging "ufw is allowing port '$ssh_port'"
-    elif ! $(ufw status | grep "Status: active" &>/dev/null); then
-      read -p "ufw is already installed, allowing port '$ssh_port', but not enabled. Would you like to enable ufw? y/n  " yn
-      case "$yn" in
-        [Yy]* ) ufw enable;
-        logging "ufw has been enabled.";
-        break;;
-        [Nn]* ) break;;
-        * ) echo "Please answer with a Y or an N.";;
-      esac
-    else
-      logging "ufw is installed and enabled"
-      break
-    fi
-  done    
+  ufw enable
+  logging "ufw is installed and enabled"
+  ufw delete number 4;ufw delete number 3;ufw delete number 2;ufw delete number 1
+  sed -i "s/'#net/ipv6/conf/default/autoconf=0'/'net/ipv6/conf/default/autoconf=0'/" /etc/ufw/sysctl.conf
+  sed -i "s/'#net/ipv6/conf/all/autoconf=0'/'net/ipv6/conf/all/autoconf=0'/" /etc/ufw/sysctl.conf
+  ufw reload
+  ufw allow "$ssh_port"
+  logging "ufw is allowing port '$ssh_port'"
 }
 
 # Function to make knockd config
