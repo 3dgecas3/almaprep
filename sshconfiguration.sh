@@ -59,10 +59,10 @@ check_ufw() {
     if ! dnf list installed ufw &>/dev/null; then
       dnf install ufw
       logging "ufw installed"
-    elif ! {ufw status | grep "$ssh_port" &>/dev/null}; then
+    elif ! $(ufw status | grep "$ssh_port" &>/dev/null); then
       ufw allow "$ssh_port"
       logging "ufw is allowing port '$ssh_port'"
-    elif ! {ufw status | grep "Status: active" &>/dev/null}; then
+    elif ! $(ufw status | grep "Status: active" &>/dev/null); then
       read -p "ufw is already installed, allowing port '$ssh_port', but not enabled. Would you like to enable ufw? y/n  " yn
       case "$yn" in
         [Yy]* ) ufw enable;
