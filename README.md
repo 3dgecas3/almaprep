@@ -1,7 +1,6 @@
 # Simple Server Setup Script for Alma
 
 This project provides a set of scripts to automate the setup and configuration of a server running Alma Linux. The scripts handle user creation, SSH configuration, firewall setup, and Podman installation. The inspirtation comes from working in a cloud environment with no ability to supply a user-data file to cloud init. It assumes starting as root in Alma Linux 9.
-It's fairly specific, hope it helps.
 
 ## Features
 
@@ -21,7 +20,10 @@ It's fairly specific, hope it helps.
 1. **Clone the repository**:
     ```
     :~# git clone https://github.com/3dgecas3/almaprep.git
-    cd almaprep
+    ```
+
+    ```
+    :~# cd almaprep
     ```
 
 2. **Run the setup script**:
@@ -62,7 +64,7 @@ It's fairly specific, hope it helps.
 
 - [User creation script](https://github.com/Iheanacho-ai/User-creation-script/blob/main/create_users.sh)
 github.com/Iheanacho-ai/User-creation-script
-- [Password configuration and security](https://security.stackexchange.com/questions/81976/is-this-a-secure-way-to-generate-passwords-at-the-command-line)
+- [Password security](https://security.stackexchange.com/questions/81976/is-this-a-secure-way-to-generate-passwords-at-the-command-line)
 security.stackexchange.com/questions/81976
 - [Github Copilot](https://github.com/features/copilot) - All available models were consulted
 github.com/features/copilot
