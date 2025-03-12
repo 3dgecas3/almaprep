@@ -1,6 +1,7 @@
 # Simple Server Setup Script for Alma
 
-This project provides a set of scripts to automate the setup and configuration of a server running Alma Linux. The scripts handle user creation, SSH configuration, firewall setup, and Podman installation. The inspirtation comes from working in a cloud environment with no ability to supply a user-data file to cloud init. It assumes starting as root in Alma linux.
+This project provides a set of scripts to automate the setup and configuration of a server running Alma Linux. The scripts handle user creation, SSH configuration, firewall setup, and Podman installation. The inspirtation comes from working in a cloud environment with no ability to supply a user-data file to cloud init. It assumes starting as root in Alma Linux 9.
+It's fairly specific, hope it helps.
 
 ## Features
 
