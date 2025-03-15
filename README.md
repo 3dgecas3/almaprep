@@ -15,6 +15,12 @@ This project provides a set of scripts to automate the setup and configuration o
 - Alma Linux
 - Root privileges
 
+## Recommended
+
+- Change root passwd
+- Run `dnf update`
+- Reboot after update 
+
 ## Usage
 
 1. **Clone the repository**:
