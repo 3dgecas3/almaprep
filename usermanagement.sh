@@ -9,7 +9,7 @@ fi
 # thank you security stack exchange
 # nice password generation, special characters included
 generate_password() {
-  openssl rand 256 | tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~' | cut -c -30
+  openssl rand 256 | tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_{|}~' | cut -c -30
 }
 
 # Check if user exists, make user if it doesn't
