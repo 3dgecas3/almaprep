@@ -55,7 +55,7 @@ change_ssh_port() {
 
 ufw_delete_allowed_ports() {
   ufw status numbered |
-    awk '/ALLOW/ {print $1, $2, $3}' |
+    awk -F"[][]" '/ALLOW/ {print $2}' |
     while read -r num action port; do
       echo "Deleting rule $num: $action $port"
       logging "Deleting rule $num: $action $port"
@@ -69,13 +69,12 @@ check_ufw() {
   ufw_delete_allowed_ports
   echo "ufw is installed and enabled"
   logging "ufw is installed and enabled"
-  ufw delete number 4;ufw delete number 3;ufw delete number 2;ufw delete number 1
   sed -i 's|#net/ipv6/conf/default/autoconf=0|net/ipv6/conf/default/autoconf=0|' /etc/ufw/sysctl.conf
   sed -i 's|#net/ipv6/conf/all/autoconf=0|net/ipv6/conf/all/autoconf=0|' /etc/ufw/sysctl.conf
   ufw reload
   ufw allow "'$ssh_port':tcp"
-  echo "ufw is allowing port '$ssh_port'"
-  logging "ufw is allowing port '$ssh_port'"
+  echo "ufw is allowing port '$ssh_port':tcp"
+  logging "ufw is allowing port '$ssh_port':tcp"
 }
 
 # Function to make knockd config
