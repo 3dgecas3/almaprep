@@ -19,12 +19,12 @@ install_helper() {
 
 # Installs podman and podman-compose
 install_podman() {
-  install_helper ("podman" "podman-compose" "podman-docker")
+  install_helper '("podman" "podman-compose" "podman-docker")'
 }
 
 # Installs dependencies for rootless podman
 install_rootless() {
-  install_helper ("slirp4netns" "fuse-overlayfs" "passt")
+  install_helper '("slirp4netns" "fuse-overlayfs" "passt")'
 }
 
 # Checks and adds subuid and subgid, takes username and file as arguments
