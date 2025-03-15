@@ -27,7 +27,7 @@ logging() {
 
 update_system() {
   echo "Updating system"
-  dnf update -y 2>&1 | while IFS= read -r line
+  dnf -y update -y 2>&1 | while IFS= read -r line
   do 
     echo "$line"
     logging "$line"

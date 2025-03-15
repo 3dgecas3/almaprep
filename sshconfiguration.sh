@@ -65,14 +65,15 @@ ufw_delete_allowed_ports() {
 
 # Looping function to check install and status of ufw
 check_ufw() {
-  ufw enable
+  echo y | ufw enable
   ufw_delete_allowed_ports
   echo "ufw is installed and enabled"
   logging "ufw is installed and enabled"
   sed -i 's|#net/ipv6/conf/default/autoconf=0|net/ipv6/conf/default/autoconf=0|' /etc/ufw/sysctl.conf
   sed -i 's|#net/ipv6/conf/all/autoconf=0|net/ipv6/conf/all/autoconf=0|' /etc/ufw/sysctl.conf
+  sed -i 's|IPV6=yes|IPV6=no|' /etc/default/ufw
   ufw reload
-  ufw allow "'$ssh_port':tcp"
+  ufw allow "'$ssh_port':tcp" 
   echo "ufw is allowing port '$ssh_port':tcp"
   logging "ufw is allowing port '$ssh_port':tcp"
 }
@@ -104,7 +105,7 @@ check_knockd() {
         echo "knockd is not installed."
         read -p "Would you like to implement knockd? y/n " yn
         case "$yn" in
-        [Yy]* ) dnf install knock-server;
+        [Yy]* ) dnf -y install knock-server;
         make_knockd_config;
         systemctl enable knockd;
         logging "knockd is enabled";;
