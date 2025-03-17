@@ -6,8 +6,9 @@ if [ -z "$LOG_FILE" ]; then
   exit 1
 fi
 
-install_helper() {
-  local required_packages=$1
+# Installs podman and podman-compose
+install_podman() {
+  local required_packages=("podman" "podman-compose" "podman-docker")
   for package in "${required_packages[@]}"; do
     install_package "$package"
     if [ "$?" -ne 0 ]; then
@@ -17,14 +18,16 @@ install_helper() {
   done
 }
 
-# Installs podman and podman-compose
-install_podman() {
-  install_helper '("podman" "podman-compose" "podman-docker")'
-}
-
 # Installs dependencies for rootless podman
 install_rootless() {
-  install_helper '("slirp4netns" "fuse-overlayfs" "passt")'
+  local required_packages=("slirp4netns" "fuse-overlayfs" "passt")
+  for package in "${required_packages[@]}"; do
+    install_package "$package"
+    if [ "$?" -ne 0 ]; then
+      echo "Error: Failed to install '$package'"
+      exit 1
+    fi
+  done
 }
 
 # Checks and adds subuid and subgid, takes username and file as arguments
