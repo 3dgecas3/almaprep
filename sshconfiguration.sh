@@ -55,7 +55,7 @@ change_ssh_port() {
 
 ufw_delete_allowed_ports() {
   local rules=()
-  ufw status numbered | awk -F"[][]" '/ALLOW/ {print $1 $2 $3 $4}' | while read -r num dest action from; do
+  ufw status numbered | awk -F"[][]" '/ALLOW/ {$1=$1;print $2 $3 $4}' | while read -r num dest action from; do
     rules+=("$num")
     echo "Deleting rule $num: $dest $action $from"
     logging "Deleting rule $num: $dest $action $from"
