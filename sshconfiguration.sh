@@ -58,8 +58,9 @@ ufw_delete_allowed_ports() {
   ufw status numbered | awk -F"[][]" '/ALLOW/ {$1=$1;print $2}' | while read -r num; do
     rules+=("$num")
   done
-  for ((i=${#rules[@]}-1; i>=0; i--)); do
+  for ((i=${#rules[@]}; i>=0; i--)); do
     echo y | ufw delete "${rules[i]}"
+    echo "Deleted rule ${rules[i]}"
   done
 }
 
