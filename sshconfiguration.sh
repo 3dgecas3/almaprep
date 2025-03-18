@@ -48,7 +48,7 @@ user_ssh() {
 # Helper function for changing the ssh port
 change_ssh_port() {
   read -p "What port would you like to use for ssh? " ssh_port
-  sed -i "s/#Port 22/Port '$ssh_port'/" /etc/ssh/sshd_config
+  sed -i "s/#Port 22/Port $ssh_port/" /etc/ssh/sshd_config
   systemctl restart sshd
   logging "Changed ssh port to '$ssh_port'"
 }
