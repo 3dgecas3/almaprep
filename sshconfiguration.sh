@@ -90,16 +90,16 @@ make_knockd_config() {
         UseSyslog
 
     [openPORT]
-        sequence      = "$open_sequence"
+        sequence      = $open_sequence
         seq_timeout   = 15
-        command       = ufw allow "$ssh_port"
+        command       = ufw allow $ssh_port/tcp
     [closePORT]
-        sequence      = "$close_sequence"
+        sequence      = $close_sequence
         seq_timeout   = 15
-        command       = ufw delete allow "$ssh_port"
+        command       = ufw delete allow $ssh_port/tcp
 EOF
     logging "knockd config created, the open sequence is "$open_sequence" and the close sequence is $close_sequence"
-    logging "knockd is altering the ufw firewall rule for port '$ssh_port'"
+    logging "knockd is altering the ufw firewall rule for port '$ssh_port'/tcp"
 }
 
 check_knockd() {
