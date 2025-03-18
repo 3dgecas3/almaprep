@@ -58,7 +58,7 @@ ufw_delete_allowed_ports() {
   local rules=($(ufw status numbered | awk -F"[][]" '/ALLOW/ {print $2}'))
 
   # Iterate through the array in reverse order
-  for ((i=${#rules[@]}; i>=1; i--)); do
+  for ((i=${#rules[@]}-1; i>=0; i--)); do
     echo y | ufw delete "${rules[i]}" &&
     echo "Deleted rule ${rules[i]}"
     logging "Deleted rule ${rules[i]}"
