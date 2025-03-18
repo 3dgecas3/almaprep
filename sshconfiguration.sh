@@ -54,13 +54,14 @@ change_ssh_port() {
 }
 
 ufw_delete_allowed_ports() {
-  local rules=()
-  ufw status numbered | awk -F"[][]" '/ALLOW/ {$1=$1;print $2}' | while read -r num; do
-    rules+=("$num")
-  done
-  for ((i=${#rules[@]}; i>=0; i--)); do
-    echo y | ufw delete "${rules[i]}"
+  # Collect all rule numbers into an array
+  local rules=($(ufw status numbered | awk -F"[][]" '/ALLOW/ {print $2}'))
+
+  # Iterate through the array in reverse order
+  for ((i=${#rules[@]}; i>=1; i--)); do
+    echo y | ufw delete "${rules[i]}" &&
     echo "Deleted rule ${rules[i]}"
+    logging "Deleted rule ${rules[i]}"
   done
 }
 
