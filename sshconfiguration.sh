@@ -110,7 +110,8 @@ check_knockd() {
         [Yy]* ) dnf -y install knock-server;
         make_knockd_config;
         systemctl enable knockd;
-        logging "knockd is enabled";;
+        systemctl start knockd;
+        logging "knockd is started and enabled on boot";;
         [Nn]* ) logging "knockd was not enabled.";;
         * ) echo "Please answer with a Y or an N.";;
         esac
