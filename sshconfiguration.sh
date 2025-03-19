@@ -36,6 +36,7 @@ user_ssh() {
     mkdir -p /home/"$1"/.ssh
     chown "$1":"$1" /home/"$1"/.ssh
     chmod 700 /home/"$1"/.ssh
+    echo "You should not copy private keys between machines. If you have a private key, supply the matching public key to this script. Otherwise, you will need to copy the private key to any machine you want to ssh from."
     read -p "Would you like to supply an ssh key for user '$1'? y/n " yn
     case "$yn" in
       [Yy]* ) get_ssh_key "$1";;
