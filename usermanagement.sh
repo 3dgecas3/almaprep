@@ -42,6 +42,25 @@ validate_username() {
   return 0
 }
 
+# Add sudo privileges without requiring a password for a specific user
+# takes username as argument
+addsudo() {
+  if [ -f /etc/sudoers.d/"$1" ]; then
+    echo "User $1 already has sudo privileges"
+  else
+    echo "$1        ALL=(ALL)       NOPASSWD: ALL" > /tmp/"$1"
+    visudo -c -q -f /tmp/"$1"
+    if [ "$?" -eq 0 ]; then
+      mv /tmp/"$1" /etc/sudoers.d/"$1"
+    else
+      echo "Error: Failed to add sudo privileges for user $1"
+      rm /tmp/"$1"
+      return 1
+    fi
+    logging "Added sudo privileges for user $1"
+  fi
+}
+
 # create admin user
 read -p "Give a name for the admin user, leave blank to use 'admin': " admin_username
 admin_username="${admin_username:-admin}"
@@ -51,8 +70,7 @@ fi
 admin_password="$(generate_password)"
 make_user "$admin_username" "$admin_password"
 make_group "$admin_username"  # create a group with the same name as the user
-usermod -aG wheel "$admin_username"  # add user to the wheel group for sudo privileges
-logging "Added user '$admin_username' to the wheel group"
+addsudo "$admin_username"
 echo "'$admin_username','$admin_password'" >> "$USERPASS_FILE"
 echo "Admin user '$admin_username' created. See password in '$USERPASS_FILE'"
 
