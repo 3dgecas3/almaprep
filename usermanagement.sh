@@ -49,7 +49,8 @@ addsudo() {
     echo "User $1 already has sudo privileges"
   else
     echo "$1        ALL=(ALL)       NOPASSWD: ALL" > /tmp/"$1"
-    visudo -c -q -f /tmp/"$1"
+    chmod 440 /tmp/"$1"
+    visudo -c -q -f /tmp/"$1"S
     if [ "$?" -eq 0 ]; then
       mv /tmp/"$1" /etc/sudoers.d/"$1"
     else
