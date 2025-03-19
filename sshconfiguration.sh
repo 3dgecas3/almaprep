@@ -76,6 +76,7 @@ check_ufw() {
   sed -i 's|#net/ipv6/conf/all/autoconf=0|net/ipv6/conf/all/autoconf=0|' /etc/ufw/sysctl.conf
   sed -i 's|IPV6=yes|IPV6=no|' /etc/default/ufw
   ufw reload
+  systemctl enable ufw
   ufw allow "$ssh_port"/tcp 
   echo "ufw is allowing port '$ssh_port'/tcp"
   logging "ufw is allowing port '$ssh_port'/tcp"
